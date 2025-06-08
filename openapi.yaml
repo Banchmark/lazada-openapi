@@ -6,8 +6,8 @@ info:
     OpenAPI spec for Lazada Affiliate integration (Thailand/Singapore/SEA).
     Includes endpoints for promo links, product feed, tracking, and batch links.
 servers:
-  - url: https://api.lazada.sg/rest
   - url: https://api.lazada.co.th/rest
+  - url: https://api.lazada.sg/rest
 components:
   securitySchemes:
     UserToken:

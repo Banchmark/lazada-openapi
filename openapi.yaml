@@ -1,0 +1,276 @@
+openapi: 3.0.1
+info:
+  title: Lazada Affiliate Open API
+  version: 1.0.1
+  description: |
+    OpenAPI spec for Lazada Affiliate integration (Thailand/Singapore/SEA).
+    Includes endpoints for promo links, product feed, tracking, and batch links.
+servers:
+  - url: https://api.lazada.sg/rest
+  - url: https://api.lazada.co.th/rest
+components:
+  securitySchemes:
+    UserToken:
+      type: apiKey
+      in: query
+      name: userToken
+  schemas:
+    PromoLinkResponse:
+      type: object
+      properties:
+        offerId: { type: string, description: Offer ID }
+        shortLink: { type: string, description: Promotion link }
+    ProductFeedResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              productId: { type: integer }
+              productName: { type: string }
+              categoryL1: { type: integer }
+              pictures: { type: array, items: { type: string } }
+              outOfStock: { type: boolean }
+              stock: { type: integer }
+              currency: { type: string }
+              sellerId: { type: integer }
+              sellerName: { type: string }
+              brandId: { type: integer }
+              brandName: { type: string }
+              totalCommissionRate: { type: string }
+              totalCommissionAmount: { type: string }
+              discountPrice: { type: string }
+    TrackingLinkResponse:
+      type: object
+      properties:
+        productId: { type: integer }
+        productName: { type: string }
+        trackingLink: { type: string }
+        commissionRate: { type: string }
+        mmCampaignName: { type: string }
+        mmCampaignStartTime: { type: string }
+        mmCampaignEndTime: { type: string }
+        dmInviteName: { type: string }
+        dmInviteStartTime: { type: string }
+        dmInviteEndTime: { type: string }
+    BatchLinkResponse:
+      type: object
+      properties:
+        data:
+          type: object
+        productBatchGetLinkInfoList:
+          type: array
+          items:
+            type: object
+            properties:
+              productId: { type: string }
+              productName: { type: string }
+              regularPromotionLink: { type: string }
+              regularCommission: { type: string }
+              dmPromotionLink: { type: string }
+              dmCommission: { type: string }
+              mmPromotionLink: { type: string }
+              mmCommission: { type: string }
+        success: { type: boolean }
+        error_code: { type: string }
+        error_msg: { type: string }
+paths:
+  /marketing/offers/link/get:
+    get:
+      operationId: getPromoLinkByOfferId
+      summary: Get promo link by offerId
+      security:
+        - UserToken: []
+      parameters:
+        - name: userToken
+          in: query
+          schema:
+            type: string
+          required: true
+          description: Unique user token (API key)
+        - name: offerId
+          in: query
+          schema:
+            type: string
+          required: true
+          description: The ID of the offer
+      responses:
+        '200':
+          description: Promo link response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PromoLinkResponse'
+  /marketing/product/feed:
+    get:
+      operationId: getProductFeed
+      summary: Get product feed (normal, MM, DM)
+      security:
+        - UserToken: []
+      parameters:
+        - name: userToken
+          in: query
+          schema:
+            type: string
+          required: true
+          description: Unique user token (API key)
+        - name: offerType
+          in: query
+          schema:
+            type: integer
+          required: true
+          description: '1: Normal, 2: MM, 3: DM'
+        - name: categoryL1
+          in: query
+          schema:
+            type: integer
+          required: false
+        - name: mmCampaignId
+          in: query
+          schema:
+            type: integer
+          required: false
+        - name: dmInviteId
+          in: query
+          schema:
+            type: integer
+          required: false
+        - name: productIds
+          in: query
+          schema:
+            type: string
+          required: false
+          description: Comma-separated list of product IDs
+        - name: page
+          in: query
+          schema:
+            type: integer
+          required: true
+          description: Page number (starts at 1)
+        - name: limit
+          in: query
+          schema:
+            type: integer
+          required: true
+          description: Page size
+      responses:
+        '200':
+          description: Product feed list
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductFeedResponse'
+  /marketing/product/link:
+    get:
+      operationId: getTrackingLinkByProduct
+      summary: Get tracking link by product id
+      security:
+        - UserToken: []
+      parameters:
+        - name: userToken
+          in: query
+          schema:
+            type: string
+          required: true
+          description: Unique user token (API key)
+        - name: productId
+          in: query
+          schema:
+            type: integer
+          required: true
+        - name: mmCampaignId
+          in: query
+          schema:
+            type: integer
+          required: false
+        - name: dmInviteId
+          in: query
+          schema:
+            type: integer
+          required: false
+      responses:
+        '200':
+          description: Tracking link response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TrackingLinkResponse'
+  /marketing/getlink:
+    get:
+      operationId: batchGetLinks
+      summary: Batch get tracking links by productId, offerId or url
+      security:
+        - UserToken: []
+      parameters:
+        - name: userToken
+          in: query
+          schema:
+            type: string
+          required: true
+          description: Unique user token (API key)
+        - name: inputType
+          in: query
+          schema:
+            type: string
+            enum: [productId, url, offerId]
+          required: true
+        - name: inputValue
+          in: query
+          schema:
+            type: string
+          required: true
+          description: Comma-separated values of productId, url, or offerId
+        - name: mmCampaignId
+          in: query
+          schema:
+            type: string
+          required: false
+        - name: dmInviteId
+          in: query
+          schema:
+            type: string
+          required: false
+        - name: subAffId
+          in: query
+          schema:
+            type: string
+          required: false
+        - name: subId1
+          in: query
+          schema:
+            type: string
+          required: false
+        - name: subId2
+          in: query
+          schema:
+            type: string
+          required: false
+        - name: subId3
+          in: query
+          schema:
+            type: string
+          required: false
+        - name: subId4
+          in: query
+          schema:
+            type: string
+          required: false
+        - name: subId5
+          in: query
+          schema:
+            type: string
+          required: false
+        - name: subId6
+          in: query
+          schema:
+            type: string
+          required: false
+      responses:
+        '200':
+          description: Batch get link response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchLinkResponse'

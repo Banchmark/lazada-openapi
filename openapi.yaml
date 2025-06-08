@@ -85,10 +85,11 @@ paths:
         - UserToken: []
       parameters:
         - name: userToken
-          in: query
-          schema:
-            type: string
-          required: true
+  in: query
+  schema:
+    type: string
+    default: fd8789e711df42e8bb89dfd844aef1ae
+  required: true
           description: Unique user token (API key)
         - name: offerId
           in: query
@@ -111,10 +112,11 @@ paths:
         - UserToken: []
       parameters:
         - name: userToken
-          in: query
-          schema:
-            type: string
-          required: true
+  in: query
+  schema:
+    type: string
+    default: fd8789e711df42e8bb89dfd844aef1ae
+  required: true
           description: Unique user token (API key)
         - name: offerType
           in: query
@@ -170,10 +172,11 @@ paths:
         - UserToken: []
       parameters:
         - name: userToken
-          in: query
-          schema:
-            type: string
-          required: true
+  in: query
+  schema:
+    type: string
+    default: fd8789e711df42e8bb89dfd844aef1ae
+  required: true
           description: Unique user token (API key)
         - name: productId
           in: query
@@ -205,10 +208,11 @@ paths:
         - UserToken: []
       parameters:
         - name: userToken
-          in: query
-          schema:
-            type: string
-          required: true
+  in: query
+  schema:
+    type: string
+    default: fd8789e711df42e8bb89dfd844aef1ae
+  required: true
           description: Unique user token (API key)
         - name: inputType
           in: query
